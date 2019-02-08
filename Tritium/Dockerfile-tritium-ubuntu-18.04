@@ -66,8 +66,7 @@ COPY --from=compile /tmp/LLL-TAO LLL-TAO
 RUN mkdir -p /home/${UNAME}/.TAO/ \
     && echo "rpcuser=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)\n\
 rpcpassword=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)\n\
-" >> /home/${UNAME}/.TAO/nexus.conf \
-    && cp /home/${UNAME}/.TAO/nexus.conf /home/${UNAME}/nexus.conf
+" >> /home/${UNAME}/nexus.conf
 
 USER root
 RUN ln -s /home/${UNAME}/LLL-TAO/nexus /usr/local/bin/nexus \
