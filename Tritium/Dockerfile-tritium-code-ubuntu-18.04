@@ -37,6 +37,9 @@ set -e\n\
 [[ ! -f /home/${UNAME}/.TAO/nexus.conf ]] && {\n\
 su ${UNAME} -c 'cp /home/${UNAME}/nexus.conf /home/${UNAME}/.TAO/nexus.conf'\n\
 }\n\
+[[ ! -d /home/${UNAME}/.TAO/LLL-TAO ]] && {\n\
+su ${UNAME} -c 'cp -dpR /home/${UNAME}/LLL-TAO/ /home/${UNAME}/.TAO/'\n\
+}\n\
 sysctl -w kernel.core_pattern=/home/${UNAME}/.TAO/core-%e.%p.%h.%t \n\
 su ${UNAME} -c 'cd LLL-TAO; git log > /home/${UNAME}/.TAO/compiled_version.txt'\n\
 su ${UNAME} -c 'nexus -beta -fastsync'\n\
