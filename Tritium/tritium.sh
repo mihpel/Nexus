@@ -5,7 +5,6 @@ set -e
 NEXUS_VERSION=merging
 ENABLE_DEBUG=1
 
-
 [[ $(id -u) -eq 0 ]] && {
 UNAME=nexus
 DUID=1342
@@ -91,7 +90,7 @@ docker build \
 }
 [[ "$1" = "start" ]] && {
 	[[ -f ${HOME}/.TAO/docker-start.sh ]] || {
-	docker run --rm -it -v ${HOME}/.TAO/:/tmp/ tritium su ${UNAME} -c 'cp /usr/local/bin/start /tmp/docker-start.sh'
+	docker run --rm -it -v ${HOME}/.TAO/:/tmp/ tritium-code su ${UNAME} -c 'cp /usr/local/bin/start /tmp/docker-start.sh'
 	}
 docker run \
 --rm \
