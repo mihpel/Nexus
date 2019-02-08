@@ -5,6 +5,7 @@ git pull
 = "$(cd ~/.TAO/LLL-TAO/; git ls-remote origin -h refs/heads/merging | awk '{print $1}')" ]] || {
 bash +x tritium.sh rebuild-code
 bash +x tritium.sh stop
+sleep 2
 bash +x tritium.sh start
 }
 docker ps | grep nexus
