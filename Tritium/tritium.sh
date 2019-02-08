@@ -5,6 +5,10 @@ set -e
 NEXUS_VERSION=merging
 ENABLE_DEBUG=1
 
+#UNAME=nexus
+#DUID=1000
+#DGID=1000
+
 UNAME=$(id -un)
 DUID=$(id -u)
 DGID=$(id -g)
@@ -12,7 +16,16 @@ DGID=$(id -g)
 [[ -d ${HOME}/.TAO ]] || {
 mkdir ${HOME}/.TAO
 }
-
+set +e
+chown -R ${DUID}:${DGID} ${HOME}/.TAO
+[[ $? -ne 0 ]] && {
+echo -e "\nYou should make sure that the your user: $(id -un) has sufficient rights \n\
+to be able to set the appropriate rights for user: ${UNAME} with uid: ${GUID} and \n\
+gid: ${DGID} on the created direcory: ${HOME}/.TAO \n\
+"
+exit 1
+}
+set -e
 echo -e "\nInitial settings:\n\
 \n  UserNAME = ${UNAME}\n\
   user uid = ${DUID}\n\
