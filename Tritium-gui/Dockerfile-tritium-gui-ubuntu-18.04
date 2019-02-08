@@ -26,6 +26,7 @@ ARG UNAME=nexus
 ARG DUID=1342
 ARG DGID=1342
 
+RUN deluser --remove-home node
 RUN groupadd -g $DGID $UNAME
 RUN useradd -l -d /home/$UNAME -m -u $DUID -g $DGID -s /bin/bash $UNAME
 
