@@ -50,31 +50,5 @@ RUN sed -i 's/sudo//g' BuildStandalone-Linux.sh &&\
     /bin/bash -x BuildStandalone-Linux.sh &&\
     rm -rf /var/lib/apt/lists/*
 
-#RUN npm install ;\
-#npm run build-dll ;\
-#npm run package-linux
-
-#USER root
-#RUN apt-get update -qy &&\
-#    apt install -y ./release/nexus_wallet-0.8.6.deb &&\
-#    rm -rf /var/lib/apt/lists/*
-
-#USER ${UNAME}
-#RUN npm install ;\
-#    npm run build-dll ;\
-#    npm run dev
-#    mkdir -p /home/${UNAME}/.config/Nexus_Wallet_BETA_v0.8.6/ ;\
-#    mkdir -p /home/${UNAME}/.Nexus_Core_Data_BETA_v0.8.6
-#USER root
-#RUN sed -i 's/sudo//g' BuildStandalone-Linux.sh &&\
-#    sed -i 's/_amd64//g' BuildStandalone-Linux.sh &&\
-#    apt-get update -qy &&\
-#    /bin/bash +x BuildStandalone-Linux.sh &&\
-#    rm -rf /var/lib/apt/lists/*
-#USER ${UNAME}
-#ENTRYPOINT ["nexus_wallet"]
-#CMD ["npm","run","dev"]
-#USER root
-#CMD ["su", "nexus", "-c", "'npm run dev'"]
 USER ${UNAME}
 CMD ["nexus_wallet"]
