@@ -48,8 +48,8 @@ a single option allowed at a time
 ## ~/.TAO
 ```
 ├── addr
-├── compiled_version.txt **includes the commit the running code has been build**
-├── core-nexus.13.4fd3e0603ec6.1549596044 **example crach dump**
+├── compiled_version.txt **includes the commit the running code has been build against**
+├── core-nexus.13.4fd3e0603ec6.1549596044 **example crash dump**
 ├── database
 ├── __db.001
 ├── __db.002
