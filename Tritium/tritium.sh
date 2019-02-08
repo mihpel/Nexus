@@ -66,7 +66,7 @@ docker run \
 --rm \
 -itd \
 --ulimit core=9999999999 \
---name ${UNAME} \
+--name nexus \
 --privileged \
 -p 0.0.0.0:9323:9323 \
 -v ${HOME}/.TAO/:/home/${UNAME}/.TAO:rw \
