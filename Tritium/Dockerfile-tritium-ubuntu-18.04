@@ -1,0 +1,91 @@
+FROM ubuntu:18.04 AS base
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends software-properties-common \
+    && add-apt-repository ppa:bitcoin/bitcoin \
+    && apt-get -qy update
+
+FROM base AS dependencies
+RUN apt-get -qy install --no-install-recommends \
+    git\
+    bzip2\
+    wget\
+    nano \
+    gconf2 \
+    gconf-service \
+    libnotify4 \
+    libappindicator1 \
+    libxtst6 \
+    libnss3 \
+    libxss1 \
+    build-essential\
+    libssl-dev\
+    libevent-dev\
+    libtool\
+    autotools-dev\
+    automake\
+    pkg-config\
+    bsdmainutils\
+    libboost-system-dev\
+    libboost-filesystem-dev\
+    libboost-chrono-dev\
+    libboost-program-options-dev\
+    libboost-test-dev\
+    libboost-thread-dev\
+    libdb4.8-dev \
+    libdb4.8++-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM dependencies AS compile
+
+ARG NEXUS_VERSION=merging
+ARG ENABLE_DEBUG=1
+
+USER $UNAME
+WORKDIR /tmp
+
+RUN git clone -b ${NEXUS_VERSION} --depth 1 https://github.com/Nexusoft/LLL-TAO \
+    && cd LLL-TAO \
+    && make -f makefile.cli clean \
+    && make -f makefile.cli ENABLE_DEBUG=${ENABLE_DEBUG}
+
+FROM compile AS final
+
+ARG UNAME=nexus
+ARG DUID=1000
+ARG DGID=1000
+
+RUN groupadd -g $DGID $UNAME
+RUN useradd -m -u $DUID -g $DGID -s /bin/bash $UNAME
+
+USER ${UNAME}
+WORKDIR /home/${UNAME}/
+
+COPY --from=compile /tmp/LLL-TAO LLL-TAO
+
+RUN mkdir -p /home/${UNAME}/.TAO/ \
+    && echo "rpcuser=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)\n\
+rpcpassword=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)\n\
+" >> /home/${UNAME}/.TAO/nexus.conf \
+    && cp /home/${UNAME}/.TAO/nexus.conf /home/${UNAME}/nexus.conf
+
+USER root
+RUN ln -s /home/${UNAME}/LLL-TAO/nexus /usr/local/bin/nexus \
+    && echo "#/bin/bash\n\
+set -e\n\
+[[ ! -f /home/${UNAME}/.TAO/nexus.conf ]] && {\n\
+su ${UNAME} -c 'cp /home/${UNAME}/nexus.conf /home/${UNAME}/.TAO/nexus.conf'\n\
+}\n\
+sysctl -w kernel.core_pattern=/home/${UNAME}/.TAO/core-%e.%p.%h.%t \n\
+su ${UNAME} -c 'cd LLL-TAO; git log > /home/${UNAME}/.TAO/compiled_version.txt'\n\
+su ${UNAME} -c 'nexus -beta -fastsync'\n\
+" > /usr/local/bin/start &&\
+    chmod +x /usr/local/bin/start &&\
+    chown ${UNAME}:${UNAME} /usr/local/bin/start 
+
+VOLUME /home/${UNAME}/.TAO/
+EXPOSE 9323
+EXPOSE 9336
+EXPOSE 8080
+CMD ["bash","-c","start"]
+
