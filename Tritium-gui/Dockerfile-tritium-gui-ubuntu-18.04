@@ -1,0 +1,80 @@
+FROM node:latest AS gui
+
+RUN apt-get update -qy &&\
+    apt-get -qy install --no-install-recommends \
+    git\
+    git-core\
+    nano\
+    net-tools\
+    bzip2\
+    wget\
+    gconf2 \
+    gconf-service \
+    libnotify4 \
+    libappindicator1 \
+    libxtst6 \
+    libnss3 \
+    libxss1 \
+    libgtk-3-0 \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM gui AS final
+
+ARG NEXUS_GUI_VERSION=Merging
+ARG UNAME=nexus
+ARG DUID=1342
+ARG DGID=1342
+
+RUN groupadd -g $DGID $UNAME
+RUN useradd -l -d /home/$UNAME -m -u $DUID -g $DGID -s /bin/bash $UNAME
+
+USER ${UNAME}
+
+WORKDIR /home/${UNAME}/
+
+RUN git clone -b ${NEXUS_GUI_VERSION} --depth 1 https://github.com/Nexusoft/NexusInterface.git
+
+WORKDIR /home/${UNAME}/NexusInterface
+
+USER root
+RUN sed -i 's/sudo//g' BuildStandalone-Linux.sh &&\
+    sed -i 's/_amd64//g' BuildStandalone-Linux.sh &&\
+    sed -i 's/_0.8.6/-0.8.6/g' BuildStandalone-Linux.sh &&\
+    sed -i "s#rm -r ~/.config/Nexus_Wallet_BETA_v0.8.6#rm -r /home/${UNAME}/.config/Nexus_Wallet_BETA_v0.8.6#g" BuildStandalone-Linux.sh &&\
+    sed -i "/package-linux/i su ${UNAME} -c \'npm install\'" BuildStandalone-Linux.sh &&\
+    sed -i "/package-linux/i su ${UNAME} -c \'npm run build-dll\'" BuildStandalone-Linux.sh &&\
+    sed -i "s/npm run package-linux/su ${UNAME} -c \'npm run package-linux\'/g" BuildStandalone-Linux.sh &&\
+    apt-get update -qy &&\
+    cat BuildStandalone-Linux.sh &&\
+    /bin/bash -x BuildStandalone-Linux.sh &&\
+    rm -rf /var/lib/apt/lists/*
+
+#RUN npm install ;\
+#npm run build-dll ;\
+#npm run package-linux
+
+#USER root
+#RUN apt-get update -qy &&\
+#    apt install -y ./release/nexus_wallet-0.8.6.deb &&\
+#    rm -rf /var/lib/apt/lists/*
+
+#USER ${UNAME}
+#RUN npm install ;\
+#    npm run build-dll ;\
+#    npm run dev
+#    mkdir -p /home/${UNAME}/.config/Nexus_Wallet_BETA_v0.8.6/ ;\
+#    mkdir -p /home/${UNAME}/.Nexus_Core_Data_BETA_v0.8.6
+#USER root
+#RUN sed -i 's/sudo//g' BuildStandalone-Linux.sh &&\
+#    sed -i 's/_amd64//g' BuildStandalone-Linux.sh &&\
+#    apt-get update -qy &&\
+#    /bin/bash +x BuildStandalone-Linux.sh &&\
+#    rm -rf /var/lib/apt/lists/*
+#USER ${UNAME}
+#ENTRYPOINT ["nexus_wallet"]
+#CMD ["npm","run","dev"]
+#USER root
+#CMD ["su", "nexus", "-c", "'npm run dev'"]
+USER ${UNAME}
+CMD ["nexus_wallet"]

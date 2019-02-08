@@ -1,0 +1,98 @@
+FROM ubuntu:18.04
+
+ARG NEXUS_VERSION=merging
+ARG UNAME=nexus
+ARG UID=1000
+ARG GID=1000
+
+RUN groupadd -g $GID $UNAME
+RUN useradd -m -u $UID -g $GID -s /bin/bash $UNAME
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends software-properties-common \
+    && add-apt-repository ppa:bitcoin/bitcoin
+
+RUN apt-get update -qy &&\
+    apt-get -qy install --no-install-recommends \
+    git\
+    bzip2\
+    wget\
+    nano \
+    gconf2 \
+    gconf-service \
+    libnotify4 \
+    libappindicator1 \
+    libxtst6 \
+    libnss3 \
+    libxss1 \
+    gdb \
+    build-essential\
+    libssl-dev\
+    libevent-dev\
+    libtool\
+    autotools-dev\
+    automake\
+    pkg-config\
+    bsdmainutils\
+    libboost-system-dev\
+    libboost-filesystem-dev\
+    libboost-chrono-dev\
+    libboost-program-options-dev\
+    libboost-test-dev\
+    libboost-thread-dev\
+    libdb4.8-dev \
+    libdb4.8++-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+USER $UNAME
+WORKDIR /home/${UNAME}/
+RUN git clone -b ${NEXUS_VERSION} --depth 1 https://github.com/Nexusoft/LLL-TAO \
+    && cd LLL-TAO \
+    && ulimit -c unlimited \
+    && sysctl -w kernel.core_pattern=~/.TAO/core-%e.%p.%h.%t \
+    && alias rebuild='make -f makefile.cli clean; make -f makefile.cli ENABLE_DEBUG=1' \
+    && rebuild
+#`./nexus -beta -fastsync`
+
+#USER root
+#RUN ln -s /home/${UNAME}/LLL-TAO/nexus /usr/local/bin/nexus \
+#    && chmod +x /usr/local/bin/nexus
+
+#USER $UNAME
+WORKDIR /home/${UNAME}/LLL-TAO/
+RUN mkdir -p /home/${UNAME}/.TAO/ \
+    && echo "rpcuser=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)\n\
+rpcpassword=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)\n\
+" >> /home/${UNAME}/.TAO/nexus.conf \
+    && cp /home/${UNAME}/.TAO/nexus.conf /home/${UNAME}/nexus.conf
+
+#RUN mkdir -p /home/${UNAME}/.TAO/ \
+#    && echo "rpcuser=rpcserver\n\
+#rpcpassword=2gredbDuRYfoVCbSQ961SRsY72PGstfzgyCMpqoQzH5U\n\
+#" >> /home/${UNAME}/.TAO/nexus.conf
+
+#VOLUME ["/home/${UNAME}/.TAO"]
+#EXPOSE 17298 17299
+#ENTRYPOINT ["nexus -verbose=2 -beta"]
+
+USER root
+RUN echo "#/bin/bash\n\
+set -e\n\
+[[ ! -f /home/${UNAME}/.TAO/nexus.conf ]] && {\n\
+cp /home/${UNAME}/nexus.conf /home/${UNAME}/.TAO/nexus.conf\n\
+}\n\
+su ${UNAME} -c './nexus -beta -fastsync'\n\
+" > /usr/local/bin/start &&\
+    chmod +x /usr/local/bin/start &&\
+    chown ${UNAME}:${UNAME} /usr/local/bin/start
+
+VOLUME /home/${UNAME}/.TAO/
+#EXPOSE 50001
+#EXPOSE 50002
+#EXPOSE 8000
+CMD ["bash","-c","start"]
+
+#CMD ["nexus", "run", "-verbose=2", "-fastsync", "-beta"]
+#CMD ["nexus", "-verbose=2", "-fastsync", "-beta"]
+
+#RUN wget https://github.com/Nexusoft/NexusInterface/releases/download/Release-0.8.6/nexus_wallet-0.8.6.deb
