@@ -5,13 +5,18 @@ set -e
 NEXUS_VERSION=merging
 ENABLE_DEBUG=1
 
-#UNAME=nexus
-#DUID=1000
-#DGID=1000
 
+[[ $(id -u) -eq 0 ]] && {
+UNAME=nexus
+DUID=1342
+DGID=1342
+}
+
+[[ $(id -u) -ne 0 ]] && {
 UNAME=$(id -un)
 DUID=$(id -u)
 DGID=$(id -g)
+}
 
 [[ -d ${HOME}/.TAO ]] || {
 mkdir ${HOME}/.TAO
@@ -37,21 +42,23 @@ Edit in file to alter the above\n\
 "
 options () {
 echo -e "\nunrecognised option\n"
-echo -e "options: <build> <rebuild <start> <restart> <stop>\n"
+echo -e "options: <build-base> <rebuild-base> <build-code> <rebuild-code> <start> <restart> <stop>\n"
 echo -e "a single option allowed at a time\n"
 exit 1
 }
 [[ -z "$@" || ! -z $2 ]] && options
-[[ "$1" = "rebuild" ||\
- "$1" = "build" ||\
+[[ "$1" = "rebuild-base" ||\
+ "$1" = "build-base" ||\
+ "$1" = "rebuild-code" ||\
+ "$1" = "build-code" ||\
  "$1" = "start" ||\
  "$1" = "restart" ||\
  "$1" = "stop" ]] || {
 options
 }
-[[ "$1" = "rebuild" ]] && {
+[[ "$1" = "rebuild-base" ]] && {
 docker build \
--t tritium \
+-t tritium-base \
 --no-cache \
 --pull \
 --build-arg NEXUS_VERSION=${NEXUS_VERSION} \
@@ -59,17 +66,38 @@ docker build \
 --build-arg DUID=${DUID} \
 --build-arg DGID=${DGID} \
 --build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
--f Dockerfile-tritium-ubuntu-18.04 .
+-f Dockerfile-tritium-base-ubuntu-18.04 .
 }
-[[ "$1" = "build" ]] && {
+[[ "$1" = "build-base" ]] && {
 docker build \
--t tritium \
+-t tritium-base \
 --build-arg NEXUS_VERSION=${NEXUS_VERSION} \
 --build-arg UNAME=${UNAME} \
 --build-arg DUID=${DUID} \
 --build-arg DGID=${DGID} \
 --build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
--f Dockerfile-tritium-ubuntu-18.04 .
+-f Dockerfile-tritium-base-ubuntu-18.04 .
+}
+[[ "$1" = "rebuild-code" ]] && {
+docker build \
+-t tritium-code \
+--no-cache \
+--build-arg NEXUS_VERSION=${NEXUS_VERSION} \
+--build-arg UNAME=${UNAME} \
+--build-arg DUID=${DUID} \
+--build-arg DGID=${DGID} \
+--build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
+-f Dockerfile-tritium-code-ubuntu-18.04 .
+}
+[[ "$1" = "build-code" ]] && {
+docker build \
+-t tritium-code \
+--build-arg NEXUS_VERSION=${NEXUS_VERSION} \
+--build-arg UNAME=${UNAME} \
+--build-arg DUID=${DUID} \
+--build-arg DGID=${DGID} \
+--build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
+-f Dockerfile-tritium-code-ubuntu-18.04 .
 }
 [[ "$1" = "start" ]] && {
 	[[ -f ${HOME}/.TAO/docker-start.sh ]] || {
@@ -84,12 +112,12 @@ docker run \
 -p 0.0.0.0:9323:9323 \
 -v ${HOME}/.TAO/:/home/${UNAME}/.TAO:rw \
 -v ${HOME}/.TAO/docker-start.sh:/usr/local/bin/start:rw \
-tritium
+tritium-code
 }
 [[ "$1" = "restart" ]] && {
-docker restart ${UNAME}
+docker restart nexus
 }
 [[ "$1" = "stop" ]] && {
-docker stop ${UNAME}
+docker stop nexus
 }
 exit 0

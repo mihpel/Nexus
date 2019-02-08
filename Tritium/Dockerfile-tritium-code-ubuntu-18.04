@@ -1,42 +1,4 @@
-FROM ubuntu:18.04 AS base
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends software-properties-common \
-    && add-apt-repository ppa:bitcoin/bitcoin \
-    && apt-get -qy update
-
-FROM base AS dependencies
-RUN apt-get -qy install --no-install-recommends \
-    git\
-    bzip2\
-    wget\
-    nano \
-    gconf2 \
-    gconf-service \
-    libnotify4 \
-    libappindicator1 \
-    libxtst6 \
-    libnss3 \
-    libxss1 \
-    build-essential\
-    libssl-dev\
-    libevent-dev\
-    libtool\
-    autotools-dev\
-    automake\
-    pkg-config\
-    bsdmainutils\
-    libboost-system-dev\
-    libboost-filesystem-dev\
-    libboost-chrono-dev\
-    libboost-program-options-dev\
-    libboost-test-dev\
-    libboost-thread-dev\
-    libdb4.8-dev \
-    libdb4.8++-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-FROM dependencies AS compile
+FROM tritium-base AS compile
 
 ARG NEXUS_VERSION=merging
 ARG ENABLE_DEBUG=1
