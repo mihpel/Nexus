@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-while true ;do
+while : ;do
 git pull
 [[ "$(cat ~/.TAO/compiled_version.txt | grep ^commit | awk '{print $2}')" \
 = "$(cd ~/.TAO/LLL-TAO/; git ls-remote origin -h refs/heads/merging | awk '{print $1}')" ]] || {
@@ -8,7 +7,6 @@ bash +x tritium.sh rebuild-code
 bash +x tritium.sh stop
 bash +x tritium.sh start
 }
-set +e
 docker ps | grep nexus
 [[ $? -ne 0 ]] && {
 bash +x dump_uploader.sh
