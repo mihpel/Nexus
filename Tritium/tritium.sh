@@ -2,15 +2,15 @@
 
 set -e
 
-UNAME=nexus
-DUID=1000
-DGID=1000
 NEXUS_VERSION=merging
 ENABLE_DEBUG=1
 
+UNAME=$(id -un)
+DUID=$(id -u)
+DGID=$(id -g)
+
 [[ -d ${HOME}/.TAO ]] || {
 mkdir ${HOME}/.TAO
-chown -R ${DUID}:${DGID} ${HOME}/.TAO/
 }
 
 echo -e "\nInitial settings:\n\
