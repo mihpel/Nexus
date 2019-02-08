@@ -61,21 +61,11 @@ docker build \
 -t tritium-base \
 --no-cache \
 --pull \
---build-arg NEXUS_VERSION=${NEXUS_VERSION} \
---build-arg UNAME=${UNAME} \
---build-arg DUID=${DUID} \
---build-arg DGID=${DGID} \
---build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
 -f Dockerfile-tritium-base-ubuntu-18.04 .
 }
 [[ "$1" = "build-base" ]] && {
 docker build \
 -t tritium-base \
---build-arg NEXUS_VERSION=${NEXUS_VERSION} \
---build-arg UNAME=${UNAME} \
---build-arg DUID=${DUID} \
---build-arg DGID=${DGID} \
---build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
 -f Dockerfile-tritium-base-ubuntu-18.04 .
 }
 [[ "$1" = "rebuild-code" ]] && {
