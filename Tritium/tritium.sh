@@ -25,7 +25,7 @@ set +e
 chown -R ${DUID}:${DGID} ${HOME}/.TAO
 [[ $? -ne 0 ]] && {
 echo -e "\nYou should make sure that the your user: $(id -un) has sufficient rights \n\
-to be able to set the appropriate rights for user: ${UNAME} with uid: ${GUID} and \n\
+to be able to set the appropriate rights for user: ${UNAME} with uid: ${DUID} and \n\
 gid: ${DGID} on the created direcory: ${HOME}/.TAO \n\
 "
 exit 1
