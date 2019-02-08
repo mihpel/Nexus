@@ -7,6 +7,8 @@ uploadtime=$(date +%y-%m-%d-%H:%M:%S)
 
 [[ ! -f dropbox_uploader.sh ]] && {
 wget https://raw.githubusercontent.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh
+}
+[[ ! -f ${HOME}/.dropbox_uploader ]] && {
 echo "OAUTH_ACCESS_TOKEN=${OAUTH_ACCESS_TOKEN}" > ${HOME}/.dropbox_uploader
 }
 
