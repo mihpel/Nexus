@@ -22,7 +22,9 @@ debug.log \
 $(ls -1 ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/ | grep ^core)
 do \
 [[ -f ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/${i} ]] && {
+[[ ${UPLOAD} = "yes" ]] && {
 bash dropbox_uploader.sh upload ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/${i} dumps/${branch}/${uploaddate}/commit-${dumpcommit}/$(hostname)-${uploadtime}-${i}
+}
 [[ "${i}" = "compiled_version.txt" ]] || rm ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/${i}
 }
 done
