@@ -36,20 +36,21 @@ a single option allowed at a time
 # File structure
 ## Git
 ```
-../
-├── LICENSE
+Tritium
+├── Dockerfile-tritium-base-ubuntu-18.04 # Base Dockerimage for dependancies
+├── Dockerfile-tritium-code-ubuntu-18.04 # Code Dockerfile - compile and prep helpers
+├── dump_uploader.sh                     # Dropbox Uploader
 ├── README.md
-└── Tritium
-    ├── Dockerfile-tritium-base-ubuntu-18.04
-    ├── Dockerfile-tritium-code-ubuntu-18.04
-    ├── README.md
-    └── tritium.sh
+├── reset-data.sh                        # Quick reset ~/.TAO/ excluding wallet.dat, LLL-TAO and compoled-versio.txt
+├── screen-watchdog.sh                   # send watchdod.sh on a screen session
+├── tritium.sh                           # Main wrapper
+└── watchdog.sh                          # Monitor for git commits and crashes and conditional reactions
 ```
 ## ~/.TAO
 ```
 ├── addr
-├── compiled_version.txt **includes the commit the running code has been build against**
-├── core-nexus.13.4fd3e0603ec6.1549596044 **example crash dump**
+├── compiled_version.txt   # Includes the commit the running code has been build against
+├── core-nexus.13.4fd3e0603ec6.1549596044 # Example crash dump
 ├── database
 ├── __db.001
 ├── __db.002
@@ -58,7 +59,7 @@ a single option allowed at a time
 ├── __db.005
 ├── __db.006
 ├── debug.log
-├── docker-start.sh **Includes the code container startup sequence. Alter directly and restart nexus container to apply changes**
+├── docker-start.sh  # Includes the code container startup sequence. Alter directly and restart nexus container to apply changes
 ├── ledger
 ├── legacy
 ├── local
