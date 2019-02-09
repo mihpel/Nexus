@@ -3,6 +3,10 @@ commits=0
 fails=0
 loopcount=0
 while : ;do
+set -e
+[[ $(docker images -q --filter=reference='tritium-base*:*latest') ]] || bash +x tritium.sh build-base
+[[ $(docker images -q --filter=reference='tritium-code*:*latest') ]] || bash +x tritium.sh build-code
+set +e
 (( loopcount +=1 ))
 echo "rebuilds since mointoring begun : ${commits}"
 echo "fails since mointoring begun : ${fails}"
