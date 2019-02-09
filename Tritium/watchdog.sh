@@ -15,8 +15,8 @@ set -e
 set +e
 (( loopcount +=1 ))
 duration=$(($(date +'%s') - ${ustartdate}))
-echo -e "\nCommit rebuilds since mointoring begun : ${commits}"
-echo -e "fails since mointoring begun : ${fails}"
+echo -e "\nCommit rebuilds since monitoring begun : ${commits}"
+echo -e "fails since monitoring begun : ${fails}"
 echo -e "commit : $(cat ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/compiled_version.txt | grep ^commit | awk '{print $2}')"
 echo -e "\nloop: ${loopcount}\n"
 echo -e "monitoring start: ${startdate}"
