@@ -3,7 +3,9 @@ set -e
 
 OAUTH_ACCESS_TOKEN="<Your dropbox API token goes here>"
 
-uploadtime=$(date +%y-%m-%d-%H:%M:%S)
+uploaddate="$(date +%y-%m-%d)"
+uploadtime="$(date +%H:%M:%S)"
+dumpcommit="$(cat ~/.TAO/compiled_version.txt | grep ^commit | awk '{print $2}')"
 
 [[ ! -f dropbox_uploader.sh ]] && {
 wget https://raw.githubusercontent.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh
@@ -18,7 +20,7 @@ debug.log \
 $(ls -1 ~/.TAO/ | grep ^core)
 do \
 [[ -f ~/.TAO/${i} ]] && {
-bash dropbox_uploader.sh upload ~/.TAO/${i} dumps/${uploadtime}-${i}
+bash dropbox_uploader.sh upload ~/.TAO/${i} dumps/${dumpcommit}/${uploaddate}-$(hostname)-${uploadtime}-${i}
 rm ~/.TAO/${i}
 }
 done
