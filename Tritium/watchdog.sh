@@ -1,5 +1,6 @@
 #!/bin/bash
 while : ;do
+date +%y-%m-%d-%H:%M:%S
 git pull
 [[ "$(cat ~/.TAO/compiled_version.txt | grep ^commit | awk '{print $2}')" \
 = "$(cd ~/.TAO/LLL-TAO/; git ls-remote origin -h refs/heads/merging | awk '{print $1}')" ]] || {
