@@ -1,6 +1,6 @@
 #!/bin/bash
 
-bash tritium.sh stop
+#bash tritium.sh stop
 
 find ${HOME}/.TAO \
 -mindepth 1 \
@@ -9,4 +9,4 @@ find ${HOME}/.TAO \
 ! -regex "${HOME}/.TAO/wallet.dat\(/.*\)?" \
 -delete
 
-bash tritium.sh start
+#bash tritium.sh start
