@@ -1,3 +1,5 @@
+#!/bin/bash
+
 bash tritium.sh stop
 
 find ${HOME}/.TAO \
