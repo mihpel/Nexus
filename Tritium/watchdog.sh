@@ -20,7 +20,7 @@ git pull
 bash +x tritium.sh rebuild-code
 bash +x tritium.sh stop
 bash +x reset-data.sh
-rm -r ~/${NEXUS_VERSION}.TAO/LLL-TAO
+[[ -d ~/${NEXUS_VERSION}.TAO/LLL-TAO ]] && rm -r ~/${NEXUS_VERSION}.TAO/LLL-TAO
 bash +x tritium.sh start
 (( commits +=1 ))
 }
