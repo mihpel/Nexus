@@ -14,6 +14,6 @@ bash +x dump_uploader.sh
 bash +x reset-data.sh
 bash +x tritium.sh start
 }
-sleep 1800
+sleep 600
 done
 
