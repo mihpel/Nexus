@@ -2,8 +2,7 @@
 
 set -e
 
-NEXUS_VERSION=merging
-ENABLE_DEBUG=1
+. ./settings.ini
 
 [[ $(id -u) -eq 0 ]] && {
 UNAME=nexus
@@ -17,15 +16,15 @@ DUID=$(id -u)
 DGID=$(id -g)
 }
 
-[[ -d ${HOME}/.TAO ]] || {
-mkdir ${HOME}/.TAO
+[[ -d ${HOME}/${NEXUS_VERSION}.TAO ]] || {
+mkdir ${HOME}/${NEXUS_VERSION}.TAO
 }
 set +e
-chown -R ${DUID}:${DGID} ${HOME}/.TAO
+chown -R ${DUID}:${DGID} ${HOME}/${NEXUS_VERSION}.TAO
 [[ $? -ne 0 ]] && {
 echo -e "\nYou should make sure that the your user: $(id -un) has sufficient rights \n\
 to be able to set the appropriate rights for user: ${UNAME} with uid: ${DUID} and \n\
-gid: ${DGID} on the created direcory: ${HOME}/.TAO \n\
+gid: ${DGID} on the created direcory: ${HOME}/${NEXUS_VERSION}.TAO \n\
 "
 exit 1
 }
@@ -89,8 +88,8 @@ docker build \
 -f Dockerfile-tritium-code-ubuntu-18.04 .
 }
 [[ "$1" = "start" ]] && {
-	[[ -f ${HOME}/.TAO/docker-start.sh ]] || {
-	docker run --rm -it -v ${HOME}/.TAO/:/tmp/ tritium-code su ${UNAME} -c 'cp /usr/local/bin/start /tmp/docker-start.sh'
+	[[ -f ${HOME}/${NEXUS_VERSION}.TAO/docker-start.sh ]] || {
+	docker run --rm -it -v ${HOME}/${NEXUS_VERSION}.TAO/:/tmp/ tritium-code su ${UNAME} -c 'cp /usr/local/bin/start /tmp/docker-start.sh'
 	}
 docker run \
 --rm \
@@ -99,8 +98,8 @@ docker run \
 --name nexus \
 --privileged \
 -p 0.0.0.0:9323:9323 \
--v ${HOME}/.TAO/:/home/${UNAME}/.TAO:rw \
--v ${HOME}/.TAO/docker-start.sh:/usr/local/bin/start:rw \
+-v ${HOME}/${NEXUS_VERSION}.TAO/:/home/${UNAME}/.TAO:rw \
+-v ${HOME}/${NEXUS_VERSION}.TAO/docker-start.sh:/usr/local/bin/start:rw \
 tritium-code
 }
 [[ "$1" = "restart" ]] && {

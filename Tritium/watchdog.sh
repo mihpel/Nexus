@@ -2,6 +2,9 @@
 commits=0
 fails=0
 loopcount=0
+
+. ./settings.ini
+
 while : ;do
 set -e
 [[ $(docker images -q --filter=reference='tritium-base*:*latest') ]] || bash +x tritium.sh build-base
@@ -12,12 +15,12 @@ echo "rebuilds since mointoring begun : ${commits}"
 echo "fails since mointoring begun : ${fails}"
 echo -e "loop: ${loopcount} \n date: $(date --utc +%y-%m-%d-%H:%M:%S)\n"
 git pull
-[[ "$(cat ~/.TAO/compiled_version.txt | grep ^commit | awk '{print $2}')" \
-= "$(cd ~/.TAO/LLL-TAO/; git ls-remote origin -h refs/heads/merging | awk '{print $1}')" ]] || {
+[[ "$(cat ~/${NEXUS_VERSION}.TAO/compiled_version.txt | grep ^commit | awk '{print $2}')" \
+= "$(cd ~/${NEXUS_VERSION}.TAO/LLL-TAO/; git ls-remote origin -h refs/heads/merging | awk '{print $1}')" ]] || {
 bash +x tritium.sh rebuild-code
 bash +x tritium.sh stop
 bash +x reset-data.sh
-rm -r ~/.TAO/LLL-TAO
+rm -r ~/${NEXUS_VERSION}.TAO/LLL-TAO
 bash +x tritium.sh start
 (( commits +=1 ))
 }

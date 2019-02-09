@@ -2,11 +2,13 @@
 
 #bash tritium.sh stop
 
-find ${HOME}/.TAO \
+. ./settings.ini
+
+find ${HOME}/${NEXUS_VERSION}.TAO \
 -mindepth 1 \
-! -regex "${HOME}/.TAO/LLL-TAO\(/.*\)?" \
-! -regex "${HOME}/.TAO/compiled_version.txt\(/.*\)?" \
+! -regex "${HOME}/${NEXUS_VERSION}.TAO/LLL-TAO\(/.*\)?" \
+! -regex "${HOME}/${NEXUS_VERSION}.TAO/compiled_version.txt\(/.*\)?" \
 -delete
 
-# ! -regex "${HOME}/.TAO/wallet.dat\(/.*\)?" \
+# ! -regex "${HOME}/${NEXUS_VERSION}.TAO/wallet.dat\(/.*\)?" \
 #bash tritium.sh start
