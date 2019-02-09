@@ -41,7 +41,7 @@ Tritium
 ├── Dockerfile-tritium-code-ubuntu-18.04 # Code Dockerfile - compile and prep helpers
 ├── dump_uploader.sh                     # Dropbox Uploader
 ├── README.md
-├── reset-data.sh                        # Quick reset ~/.TAO/ excluding wallet.dat, LLL-TAO and compoled-versio.txt
+├── reset-data.sh                        # Quick reset ~/.TAO/ excluding wallet.dat, LLL-TAO and compiled-version.txt
 ├── screen-watchdog.sh                   # send watchdod.sh on a screen session
 ├── tritium.sh                           # Main wrapper
 └── watchdog.sh                          # Monitor for git commits and crashes and conditional reactions
