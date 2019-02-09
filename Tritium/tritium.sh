@@ -33,6 +33,7 @@ echo -e "\nInitial settings:\n\
 \n  UserNAME = ${UNAME}\n\
   user uid = ${DUID}\n\
   user gid = ${DGID}\n\
+  host mount = ${HOME}/${DOCK_DIR}/ \n\
   nexus build version = ${NEXUS_VERSION}\n\
   enable_debug = ${ENABLE_DEBUG}
 \n\
