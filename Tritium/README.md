@@ -27,7 +27,7 @@ a single option allowed at a time
 <build-base>   : *Builds base image from Dockerfile-tritium-base-ubuntu-18.04*
 <rebuild-base> : *Rebuilds base image ignoring cache*
 <build-code>   : *Builds code image from Dockerfile-tritium-code-ubuntu-18.04*
-<build-code>   : *Rebuilds code image ignoring cache*
+<rebuild-code> : *Rebuilds code image ignoring cache*
 <start>        : *Attempts to start code container*
 <restart>      : *Attempts to restart code container*
 <stop>         : *Stops code container* (it's also removed since the run command includes --rm switch)
