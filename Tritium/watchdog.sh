@@ -13,6 +13,7 @@ git pull
 bash +x tritium.sh rebuild-code
 bash +x tritium.sh stop
 bash +x reset-data.sh
+rm -r ~/.TAO/LLL-TAO
 bash +x tritium.sh start
 (( commits +=1 ))
 }
