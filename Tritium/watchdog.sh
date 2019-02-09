@@ -1,10 +1,12 @@
 #!/bin/bash
 commits=0
 fails=0
+loopcount=0
 while : ;do
+(( loopcount +=1 ))
 echo "rebuilds since mointoring begun : ${commits}"
 echo "fails since mointoring begun : ${fails}"
-date +%y-%m-%d-%H:%M:%S
+echo -e "loop: ${loopcount} \n date: $(date --utc +%y-%m-%d-%H:%M:%S)\n"
 git pull
 [[ "$(cat ~/.TAO/compiled_version.txt | grep ^commit | awk '{print $2}')" \
 = "$(cd ~/.TAO/LLL-TAO/; git ls-remote origin -h refs/heads/merging | awk '{print $1}')" ]] || {
