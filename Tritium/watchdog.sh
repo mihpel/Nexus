@@ -37,8 +37,10 @@ bash +x tritium.sh start
 }
 docker ps | grep nexus
 [[ $? -ne 0 ]] && {
+[[ ${UPLOAD} = "yes" ]] && {
 echo -e "\ncrash $(tail ${HOME}/${DOCK_DIR}/${NEXUS_VERSION}.TAO/debug.log | grep height | tail -1 | tr ' ' '\n' | grep height)\n" >> ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/compiled_version.txt
 bash +x dump_uploader.sh
+}
 bash +x reset-data.sh
 bash +x tritium.sh start
 (( fails +=1 ))
