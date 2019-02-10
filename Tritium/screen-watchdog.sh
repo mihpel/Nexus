@@ -10,8 +10,16 @@ ${duid} apt-get -qy install screen
 }
 }
 
+LCK="/tmp/$(basename $0).LCK";
+exec 9>$LCK;
+if ! flock -n 9 ; then
+        echo " *** Tried to launch, but was canceled because there is another $(basename $0) running"
+        exit 1
+fi
+
 check_screen
 [[ $? -eq 0 ]] || exit 1
+
 
 [[ -f .splitscreenrc ]] || {
 cat <<-'EOF' > .splitscreenrc

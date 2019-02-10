@@ -1,4 +1,12 @@
 #!/bin/bash
+
+LCK="/tmp/$(basename $0).LCK";
+exec 9>$LCK;
+if ! flock -n 9 ; then
+        echo " *** Tried to launch, but was canceled because there is another $(basename $0) running"
+        exit 1
+fi
+
 commits=0
 fails=0
 loopcount=0
