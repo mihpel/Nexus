@@ -23,8 +23,14 @@ check_dropbox () {
 
 crash_height () {
 	cheight=$(grep 'height' ${HOME}/${DOCK_DIR}/${NEXUS_VERSION}.TAO/debug.log | tail -n 1 | tr ' ' '\n' | grep height)
-	sed -i '/crash height/,-1 d' ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/compiled_version.txt
+	sed -i '/crash height/,+1 d' ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/compiled_version.txt
 	echo -e "\ncrash ${cheight}" >> ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/compiled_version.txt
+}
+
+[[ -z $(docker ps | grep tritium-code) && -z $(docker ps | grep nexus) ]] || {
+echo "code container appears to be running"
+echo "abording Upload"
+exit 0
 }
 
 . ./settings.ini
@@ -64,7 +70,7 @@ do \
 		}
 		[[ ",${upload_method}," =~ ",mega," ]] && {
 			check_mega
-			[[ $(megals | grep commit-${dumpcommit} | grep -v Trash ) ]] || {
+			[[ $(megals | grep /Root/dumps/${branch}/${uploaddate}/commit-${dumpcommit} | grep -v Trash ) ]] || {
 				[[ $(megals | grep /Root/dumps) ]] || megamkdir /Root/dumps
 				[[ $(megals | grep /Root/dumps/${branch}) ]] || megamkdir /Root/dumps/${branch}
 				[[ $(megals | grep /Root/dumps/${branch}/${uploaddate}) ]] || megamkdir /Root/dumps/${branch}/${uploaddate}
@@ -72,7 +78,9 @@ do \
 			}
 			megaput  --path /Root/dumps/${branch}/${uploaddate}/commit-${dumpcommit}/$(hostname)-${uploadtime}-${i}${extention} ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/${uploadtime}-${i}${extention}
 		}
-		[[ "${i}" = "compiled_version.txt" ]] || rm ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/${i}
+		[[ -z $(docker ps | grep tritium-code) && -z $(docker ps | grep nexus) ]] && {
+			[[ "${i}" = "compiled_version.txt" ]] || rm ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/${i}
+		}
 		rm ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/${uploadtime}-${i}${extention}
 	}
 }
