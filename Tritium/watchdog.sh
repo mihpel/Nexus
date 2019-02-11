@@ -31,7 +31,6 @@ echo -e "monitoring start: ${startdate}"
 echo -e "current date: $(date --utc +%y-%m-%d-%H:%M:%S)"
 echo -e "timelapse:${duration} Sec\n"
 echo -e "$(grep 'height' ${HOME}/${DOCK_DIR}/${NEXUS_VERSION}.TAO/debug.log | tail -n 1 | tr ' ' '\n' | grep height)\n"
-#echo -e "$(tail ${HOME}/${DOCK_DIR}/${NEXUS_VERSION}.TAO/debug.log | grep height | tail -1 | tr ' ' '\n' | grep height)\n"
 eval "echo $(date -ud "@${duration}" +'$((%s/3600/24)) Running: days %H hours %M minutes %S seconds')"
 echo ""
 git pull
@@ -47,7 +46,6 @@ bash +x tritium.sh start
 docker ps | grep nexus
 [[ $? -ne 0 ]] && {
 [[ ${UPLOAD} = "yes" ]] && {
-echo -e "\ncrash $(tail ${HOME}/${DOCK_DIR}/${NEXUS_VERSION}.TAO/debug.log | grep height | tail -1 | tr ' ' '\n' | grep height)\n" >> ~/${DOCK_DIR}/${NEXUS_VERSION}.TAO/compiled_version.txt
 bash +x dump_uploader.sh
 }
 bash +x reset-data.sh
