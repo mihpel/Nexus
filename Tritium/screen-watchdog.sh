@@ -10,13 +10,13 @@ ${duid} apt-get -qy install screen
 }
 }
 
-LCK="/tmp/$(basename $0).LCK";
-exec 9>$LCK;
-if ! flock -n 9 ; then
-        echo " *** Tried to launch, but was canceled because there is another $(basename $0) running"
-        exit 1
-fi
-
+[[ $(screen -ls | grep nexus-watchdog) ]] && {
+        echo " *** A screen session named nexus-watchdog is already running"
+	echo "reattach issuing : screen -RD $(screen -ls | grep nexus-watchdog | awk '{print $1}')"
+	read -p "Reattach now (Yy) ? " -n 1 -r
+	[[ $REPLY =~ ^[Yy]$ ]] && screen -RD $(screen -ls | grep nexus-watchdog | awk '{print $1}')
+        exit 0
+}
 check_screen
 [[ $? -eq 0 ]] || exit 1
 
@@ -38,5 +38,5 @@ detach
 EOF
 }
 
-screen -c .splitscreenrc
+screen -S nexus-watcher -c .splitscreenrc
 screen -RD
