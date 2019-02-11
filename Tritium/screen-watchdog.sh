@@ -10,6 +10,9 @@ ${duid} apt-get -qy install screen
 }
 }
 
+check_screen
+[[ $? -eq 0 ]] || exit 1
+
 [[ $(screen -ls | grep nexus-watchdog) ]] && {
         echo " *** A screen session named nexus-watchdog is already running"
 	echo "reattach issuing : screen -RD $(screen -ls | grep nexus-watchdog | awk '{print $1}')"
@@ -17,9 +20,6 @@ ${duid} apt-get -qy install screen
 	[[ $REPLY =~ ^[Yy]$ ]] && screen -RD $(screen -ls | grep nexus-watchdog | awk '{print $1}')
         exit 0
 }
-check_screen
-[[ $? -eq 0 ]] || exit 1
-
 
 [[ -f .splitscreenrc ]] || {
 cat <<-'EOF' > .splitscreenrc
