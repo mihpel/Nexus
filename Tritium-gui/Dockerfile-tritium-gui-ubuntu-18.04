@@ -41,8 +41,8 @@ WORKDIR /home/${UNAME}/NexusInterface
 USER root
 RUN sed -i 's/sudo//g' BuildStandalone-Linux.sh &&\
     sed -i 's/_amd64//g' BuildStandalone-Linux.sh &&\
-    sed -i 's/_0.8.6/-0.8.6/g' BuildStandalone-Linux.sh &&\
-    sed -i "s#rm -r ~/.config/Nexus_Wallet_BETA_v0.8.6#rm -r /home/${UNAME}/.config/Nexus_Wallet_BETA_v0.8.6#g" BuildStandalone-Linux.sh &&\
+    sed -i 's/_0.8.6/-0.8.7/g' BuildStandalone-Linux.sh &&\
+    sed -i "s#rm -r ~/.config/Nexus_Wallet_BETA_v0.8.7#rm -r /home/${UNAME}/.config/Nexus_Wallet_BETA_v0.8.7#g" BuildStandalone-Linux.sh &&\
     sed -i "/package-linux/i su ${UNAME} -c \'npm install\'" BuildStandalone-Linux.sh &&\
     sed -i "/package-linux/i su ${UNAME} -c \'npm run build-dll\'" BuildStandalone-Linux.sh &&\
     sed -i "s/npm run package-linux/su ${UNAME} -c \'npm run package-linux\'/g" BuildStandalone-Linux.sh &&\
@@ -51,5 +51,5 @@ RUN sed -i 's/sudo//g' BuildStandalone-Linux.sh &&\
     /bin/bash -x BuildStandalone-Linux.sh &&\
     rm -rf /var/lib/apt/lists/*
 
-USER ${UNAME}
+#USER ${UNAME}
 CMD ["nexus_wallet"]
