@@ -42,7 +42,7 @@ su ${UNAME} -c 'cp -dpR /home/${UNAME}/LLL-TAO/ /home/${UNAME}/.TAO/'\n\
 }\n\
 sysctl -w kernel.core_pattern=/home/${UNAME}/.TAO/core-%e.%p.%h.%t \n\
 su ${UNAME} -c 'cd LLL-TAO; git log > /home/${UNAME}/.TAO/compiled_version.txt'\n\
-su ${UNAME} -c 'nexus -beta -fastsync'\n\
+su ${UNAME} -c 'nexus -testnet -fastsync'\n\
 " > /usr/local/bin/start &&\
     chmod +x /usr/local/bin/start &&\
     chown ${UNAME}:${UNAME} /usr/local/bin/start 
